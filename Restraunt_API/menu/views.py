@@ -1,4 +1,5 @@
 import requests
+from rest_framework.parsers import FormParser,MultiPartParser
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from rest_framework.decorators import api_view
@@ -13,8 +14,9 @@ def Menu_list(request):
     if request.method == 'GET':
         menu = Menu.objects.all()
         serializer = MenuSerializer(menu, many=True)
-        return JsonResponse({'menu':serializer.data}, safe=False)
+        return Response(serializer.data)
     if request.method == 'POST':
+        parser_classes = [MultiPartParser, FormParser]
         serializer = MenuSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
