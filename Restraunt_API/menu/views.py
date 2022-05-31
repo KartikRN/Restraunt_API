@@ -19,3 +19,13 @@ def Menu_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def item_details(request,slug):
+    try:
+        item = Menu.objects.get(Item_name = slug)
+    except Menu.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MenuSerializer(item)
+    return Response(serializer.data)
