@@ -16,3 +16,18 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.Item_name
+
+
+class Order(models.Model):
+    user = models.EmailField(verbose_name="email", max_length=60, unique=True)
+    Item_name = models.CharField(max_length=100)
+    Image = models.ImageField(upload_to=upload_to, default="")
+    Price = models.FloatField()
+    Discount = models.FloatField()
+    Plate_size = models.IntegerField()
+    zip_code = models.IntegerField()
+    Address = models.TextField()
+    sts = models.CharField(max_length=50, default=None)
+
+    def __str__(self):
+        return self.Item_name

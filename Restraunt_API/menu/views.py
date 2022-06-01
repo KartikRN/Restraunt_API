@@ -5,8 +5,8 @@ from django.http import HttpResponse,JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Menu
-from .serializers import MenuSerializer
+from .models import Menu, Order
+from .serializers import MenuSerializer,OrderSerializer
 # Create your views here.
 
 @api_view(['GET','POST'])
@@ -30,4 +30,22 @@ def item_details(request,slug):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer = MenuSerializer(item)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def order(request):
+    parser_classes = [MultiPartParser, FormParser]
+    serializer = OrderSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def past_orders(request,slug):
+    try:
+        ord_list = Order.objects.get(user = slug)
+    except Order.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = OrderSerializer(ord_list)
     return Response(serializer.data)
