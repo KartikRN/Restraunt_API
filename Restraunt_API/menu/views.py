@@ -42,10 +42,14 @@ def order(request):
 
 @api_view(['GET'])
 def past_orders(request,slug):
+    orders = []
+    customers = Order.objects.values('user', 'id')
+    print(customers)
     try:
-        ord_list = Order.objects.get(user = slug)
+        ord_list = Order.objects.filter(user=slug)
+        print(ord_list)
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = OrderSerializer(ord_list)
+    serializer = OrderSerializer(ord_list, many=True)
     return Response(serializer.data)
